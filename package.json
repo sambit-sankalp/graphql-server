@@ -1,0 +1,29 @@
+{
+  "name": "graphql-server",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A graphql server",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "nodemon server/server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sambit-sankalp/graphql-server.git"
+  },
+  "author": "Sambit Sankalp",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sambit-sankalp/graphql-server/issues"
+  },
+  "homepage": "https://github.com/sambit-sankalp/graphql-server#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.5.1",
+    "lodash": "^4.17.21",
+    "mongoose": "^5.13.6",
+    "nodemon": "^2.0.12"
+  }
+}
