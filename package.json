@@ -5,7 +5,10 @@
   "description": "A graphql server",
   "main": "server/server.js",
   "scripts": {
-    "start": "nodemon server/server"
+    "start": "node server/server",
+    "server": "nodemon server/server",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {
     "type": "git",
@@ -18,6 +21,8 @@
   },
   "homepage": "https://github.com/sambit-sankalp/graphql-server#readme",
   "dependencies": {
+    "concurrently": "^6.2.1",
+    "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-graphql": "^0.12.0",
