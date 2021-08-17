@@ -1,14 +1,8 @@
 import React from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 
-const GET_ALL_BOOKS = gql`
-  {
-    authors {
-      id
-      name
-    }
-  }
-`;
+import { GET_ALL_BOOKS } from "../queries/queries";
+import BookTable from "../tables/BookTable";
 
 const BookList = () => {
   const { loading, error, data } = useQuery(GET_ALL_BOOKS);
@@ -21,7 +15,7 @@ const BookList = () => {
       ) : error ? (
         <h1>{error}</h1>
       ) : (
-        <h1>Hello World</h1>
+        <BookTable data={data} />
       )}
     </div>
   );
