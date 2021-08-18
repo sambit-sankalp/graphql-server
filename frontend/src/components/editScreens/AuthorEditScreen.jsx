@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   InputLabel,
@@ -9,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { useQuery, useMutation } from "@apollo/client";
 
-import { GET_ALL_AUTHORS, ADD_BOOK, GET_ALL_BOOKS } from "../queries/queries";
+import { GET_ALL_AUTHORS, GET_AUTHOR, UPDATE_AUTHOR } from "../queries/queries";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,20 +30,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddBook = () => {
+const AuthorEditScreen = () => {
+  const { id } = useParams();
   const classes = useStyles();
-  const { loading, error, data } = useQuery(GET_ALL_AUTHORS);
-  const { authors } = data;
+  const { loading, error, data } = useQuery(GET_AUTHOR, {
+    variables: { id },
+  });
+  const { author } = data;
   const [
-    addBook,
-    { data: book, loading: mutationLoading, error: mutationError },
-  ] = useMutation(ADD_BOOK);
+    updateAuthor,
+    { data: mutationData, loading: mutationLoading, error: mutationError },
+  ] = useMutation(UPDATE_AUTHOR);
   console.log(data);
 
   const [values, setValues] = useState({
-    name: "",
-    genre: "",
-    author: "",
+    name: author.name,
+    age: author.age,
   });
 
   const handleChange = (event) => {
@@ -55,13 +58,12 @@ const AddBook = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    addBook({
+    updateAuthor({
       variables: {
         name: values.name,
-        genre: values.genre,
-        authorId: values.author,
+        age: values.age,
       },
-      refetchQueries: [{ query: GET_ALL_BOOKS }],
+      refetchQueries: [{ query: GET_ALL_AUTHORS }],
     });
   };
 
@@ -81,7 +83,7 @@ const AddBook = () => {
           >
             <div>
               <Typography variant="h3" component="h3" align="left">
-                Add Book
+                Update Author
               </Typography>
               <FormControl
                 fullWidth
@@ -108,52 +110,23 @@ const AddBook = () => {
                 className={clsx(classes.margin, classes.textField)}
                 variant="outlined"
               >
-                <InputLabel htmlFor="outlined-adornment-genre">
-                  Genre
-                </InputLabel>
+                <InputLabel htmlFor="outlined-adornment-age">Age</InputLabel>
                 <OutlinedInput
-                  id="outlined-adornment-genre"
-                  value={values.genre}
+                  id="outlined-adornment-age"
+                  value={values.age}
                   onChange={handleChange}
-                  aria-describedby="outlined-genre-helper-text"
+                  aria-describedby="outlined-age-helper-text"
                   inputProps={{
-                    name: "genre",
-                    "aria-label": "genre",
+                    name: "age",
+                    "aria-label": "age",
                   }}
                   labelWidth={40}
                 />
               </FormControl>
             </div>
-            <div>
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel htmlFor="outlined-author-native-simple">
-                  Author
-                </InputLabel>
-                <Select
-                  native
-                  value={values.age}
-                  onChange={handleChange}
-                  label="Author"
-                  inputProps={{
-                    name: "author",
-                    id: "outlined-author-native-simple",
-                  }}
-                >
-                      <option aria-label="None" value="" />
-                      <Link to="/addauthor">
-                        <option value="">Add an Author</option>
-                      </Link>
-                  {authors.map((author) => (
-                    <option key={author.id} value={author.id}>
-                      {author.name}
-                    </option>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
             <div className={classes.button}>
               <Button variant="contained" color="primary" type="submit">
-                Add
+                Update
               </Button>
             </div>
           </form>
@@ -163,4 +136,4 @@ const AddBook = () => {
   );
 };
 
-export default AddBook;
+export default AuthorEditScreen;

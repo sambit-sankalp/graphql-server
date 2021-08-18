@@ -1,5 +1,6 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { Link } from "react-router-dom";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
 import {
   Box,
   Collapse,
@@ -12,8 +13,16 @@ import {
   TableRow,
   Typography,
   Paper,
+  Fab,
 } from "@material-ui/core";
-import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
+import {
+  KeyboardArrowDown,
+  KeyboardArrowUp,
+  Add,
+  Edit,
+  Delete,
+} from "@material-ui/icons";
+import { DELETE_AUTHOR, GET_ALL_AUTHORS } from "../queries/queries";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -44,6 +53,21 @@ const useRowStyles = makeStyles({
 function Row({ author }) {
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
+  const [
+    deleteAuthor,
+    { data: mutationData, loading: mutationLoading, error: mutationError },
+  ] = useMutation(DELETE_AUTHOR);
+
+  const deleteHandler = (id) => {
+    if (window.confirm("Are you sure")) {
+      deleteAuthor({
+        variables: {
+          id: id,
+        },
+        refetchQueries: [{ query: GET_ALL_AUTHORS }],
+      });
+    }
+  };
 
   return (
     <React.Fragment>
@@ -62,9 +86,33 @@ function Row({ author }) {
             {open ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
           </IconButton>
         </StyledTableCell>
+        <StyledTableCell align="right">
+          <Link to={`/author/${author.id}`}>
+            <Fab
+              size="medium"
+              color="secondary"
+              aria-label="edit"
+              className={classes.margin}
+            >
+              <Edit />
+            </Fab>
+          </Link>
+          <Fab
+            size="medium"
+            color="secondary"
+            aria-label="delete"
+            onClick={() => deleteHandler(author.id)}
+            className={classes.margin}
+          >
+            <Delete />
+          </Fab>
+        </StyledTableCell>
       </StyledTableRow>
       <StyledTableRow>
-        <StyledTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <StyledTableCell
+          style={{ paddingBottom: 0, paddingTop: 0 }}
+          colSpan={6}
+        >
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               <Typography variant="h6" gutterBottom component="div">
@@ -85,7 +133,30 @@ function Row({ author }) {
                         {book.id}
                       </StyledTableCell>
                       <StyledTableCell>{book.name}</StyledTableCell>
-                      <StyledTableCell align="right">{book.genre}</StyledTableCell>
+                      <StyledTableCell align="right">
+                        {book.genre}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        <Link to={`/book/${book.id}`}>
+                          <Fab
+                            size="medium"
+                            color="secondary"
+                            aria-label="edit"
+                            className={classes.margin}
+                          >
+                            <Edit />
+                          </Fab>
+                        </Link>
+                        <Fab
+                          size="medium"
+                          color="secondary"
+                          aria-label="delete"
+                          onClick={() => deleteHandler(book.id)}
+                          className={classes.margin}
+                        >
+                          <Delete />
+                        </Fab>
+                      </StyledTableCell>
                     </StyledTableRow>
                   ))}
                 </TableBody>
@@ -101,23 +172,39 @@ function Row({ author }) {
 const AuthorTable = ({ data }) => {
   const { authors } = data;
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <StyledTableRow>
-            <StyledTableCell>Id</StyledTableCell>
-            <StyledTableCell>Name</StyledTableCell>
-            <StyledTableCell align="right">Age</StyledTableCell>
-            <StyledTableCell align="right">Books</StyledTableCell>
-          </StyledTableRow>
-        </TableHead>
-        <TableBody>
-          {authors.map((author) => (
-            <Row key={author.id} author={author} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <div>
+      <Typography variant="h3" component="h3" align="left">
+        Authors
+      </Typography>
+      <Link to="/addauthor">
+        <Fab
+          size="medium"
+          color="secondary"
+          aria-label="add"
+          className={classes.margin}
+        >
+          <Add />
+        </Fab>
+      </Link>
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <StyledTableRow>
+              <StyledTableCell>Id</StyledTableCell>
+              <StyledTableCell>Name</StyledTableCell>
+              <StyledTableCell align="right">Age</StyledTableCell>
+              <StyledTableCell align="right">Books</StyledTableCell>
+              <StyledTableCell />
+            </StyledTableRow>
+          </TableHead>
+          <TableBody>
+            {authors.map((author) => (
+              <Row key={author.id} author={author} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </div>
   );
 };
 

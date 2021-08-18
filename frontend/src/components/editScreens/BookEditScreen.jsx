@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   InputLabel,
@@ -9,7 +10,12 @@ import {
 } from "@material-ui/core";
 import { useQuery, useMutation } from "@apollo/client";
 
-import { GET_ALL_AUTHORS, ADD_BOOK, GET_ALL_BOOKS } from "../queries/queries";
+import {
+  GET_ALL_AUTHORS,
+  GET_ALL_BOOKS,
+  GET_BOOK,
+  UPDATE_BOOK,
+} from "../queries/queries";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,20 +35,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddBook = () => {
+const BookEditScreen = () => {
+  const { id } = useParams();
   const classes = useStyles();
-  const { loading, error, data } = useQuery(GET_ALL_AUTHORS);
-  const { authors } = data;
+  const {
+    loading: authorsLoading,
+    error: authorsError,
+    data: authorsData,
+  } = useQuery(GET_ALL_AUTHORS);
+  const { authors } = authorsData;
+  const { loading, error, data } = useQuery(GET_BOOK, {
+    variables: { id },
+  });
+  const { book } = data;
   const [
-    addBook,
-    { data: book, loading: mutationLoading, error: mutationError },
-  ] = useMutation(ADD_BOOK);
+    updateBook,
+    { data: mutationData, loading: mutationLoading, error: mutationError },
+  ] = useMutation(UPDATE_BOOK);
   console.log(data);
 
   const [values, setValues] = useState({
-    name: "",
-    genre: "",
-    author: "",
+    name: book.name,
+    genre: book.genre,
+    author: book.author.id,
   });
 
   const handleChange = (event) => {
@@ -55,7 +70,7 @@ const AddBook = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    addBook({
+    updateBook({
       variables: {
         name: values.name,
         genre: values.genre,
@@ -81,7 +96,7 @@ const AddBook = () => {
           >
             <div>
               <Typography variant="h3" component="h3" align="left">
-                Add Book
+                Update Book
               </Typography>
               <FormControl
                 fullWidth
@@ -139,10 +154,10 @@ const AddBook = () => {
                     id: "outlined-author-native-simple",
                   }}
                 >
-                      <option aria-label="None" value="" />
-                      <Link to="/addauthor">
-                        <option value="">Add an Author</option>
-                      </Link>
+                  <option aria-label="None" value="" />
+                  <Link to="/addauthor">
+                    <option value="">Add an Author</option>
+                  </Link>
                   {authors.map((author) => (
                     <option key={author.id} value={author.id}>
                       {author.name}
@@ -153,7 +168,7 @@ const AddBook = () => {
             </div>
             <div className={classes.button}>
               <Button variant="contained" color="primary" type="submit">
-                Add
+                Update
               </Button>
             </div>
           </form>
@@ -163,4 +178,4 @@ const AddBook = () => {
   );
 };
 
-export default AddBook;
+export default BookEditScreen;
