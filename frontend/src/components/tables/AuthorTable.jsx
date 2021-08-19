@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useMutation } from "@apollo/client";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import {
   Box,
@@ -181,7 +182,6 @@ const AuthorTable = ({ data }) => {
           size="medium"
           color="secondary"
           aria-label="add"
-          className={classes.margin}
         >
           <Add />
         </Fab>

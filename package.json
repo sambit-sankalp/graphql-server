@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/sambit-sankalp/graphql-server#readme",
   "dependencies": {
+    "clsx": "^1.1.1",
     "concurrently": "^6.2.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",

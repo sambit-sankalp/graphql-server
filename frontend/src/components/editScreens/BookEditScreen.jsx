@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -43,6 +44,7 @@ const BookEditScreen = () => {
     error: authorsError,
     data: authorsData,
   } = useQuery(GET_ALL_AUTHORS);
+  console.log(authorsData)
   const { authors } = authorsData;
   const { loading, error, data } = useQuery(GET_BOOK, {
     variables: { id },
