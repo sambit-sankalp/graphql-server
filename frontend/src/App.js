@@ -5,7 +5,7 @@ import {
   ApolloProvider
 } from "@apollo/client";
 
-import Home from "./components/Home";
+import Body from "./components/Body";
 
 const client = new ApolloClient({
   uri: "http://localhost:5000/graphql",
@@ -17,7 +17,7 @@ export default function App() {
     <ApolloProvider client={client}>
       <div className="App">
         <h1>Your Books</h1>
-        <Home />
+        <Body />
       </div>
     </ApolloProvider>
   );

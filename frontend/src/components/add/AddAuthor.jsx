@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
+import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   InputLabel,
   FormControl,
   OutlinedInput,
   Typography,
+  Button
 } from "@material-ui/core";
 import { useMutation } from "@apollo/client";
 
@@ -37,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 const AddAuthor = () => {
   const classes = useStyles();
   const [addAuthor, { loading, error, data }] = useMutation(ADD_AUTHOR);
-  console.log(data);
+  console.log(useMutation(ADD_AUTHOR));
 
   const [values, setValues] = useState({
     name: "",
